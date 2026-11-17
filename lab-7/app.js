@@ -77,7 +77,7 @@ async function connectInfura(event) {
     infuraEndpoint = endpoint;
     input.value = "";
     feedback.textContent = "เชื่อม Infura กับ Ethereum Sepolia แล้ว";
-    if (wallet) await syncWallet();
+    if (wallet) void syncWallet();
   } catch (error) {
     feedback.dataset.error = "true";
     feedback.textContent = error.message + (infuraEndpoint ? " · ยังใช้การเชื่อมต่อเดิม" : "");
@@ -102,7 +102,7 @@ function status(message, error = false) {
 function refreshControls() {
   ui["infura-key"].disabled = connectingInfura || pending || lookingUpBalance;
   ui["infura-connect"].disabled = connectingInfura || pending || lookingUpBalance;
-  ui["lookup-submit"].disabled = !configured || !infuraEndpoint || lookingUpBalance || connectingInfura || pending;
+  ui["lookup-submit"].disabled = !configured || !infuraEndpoint || lookingUpBalance || connectingInfura;
   ui["lookup-address"].disabled = lookingUpBalance;
   ui.connect.disabled = !wallet || refreshing || pending || connectingInfura || Boolean(account && chainId === network.chainId);
   ui.connect.textContent = account
@@ -143,7 +143,7 @@ async function balanceOf(address) {
 
 async function lookupBalance(event) {
   event.preventDefault();
-  if (!configured || !infuraEndpoint || lookingUpBalance || connectingInfura || pending) return;
+  if (!configured || !infuraEndpoint || lookingUpBalance || connectingInfura) return;
 
   const address = ui["lookup-address"].value.trim();
   const feedback = ui["lookup-result"];
