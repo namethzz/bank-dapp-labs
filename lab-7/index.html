@@ -4,38 +4,54 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bank DApp · Assignment Lab 7</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../bank-ui.css">
 </head>
 <body>
   <header class="topbar">
     <div class="container header-inner">
-      <strong class="brand"><span class="mark" aria-hidden="true">B</span> Bank DApp</strong>
+      <a class="brand" href="../" aria-label="Bank DApp · หน้าหลัก">
+        <span class="mark" aria-hidden="true">B</span>
+        <span>Bank DApp</span>
+      </a>
+      <nav class="lab-nav" aria-label="เลือกงาน">
+        <a href="../lab-6/">Lab 6</a>
+        <a href="../lab-7/" aria-current="page">Lab 7</a>
+      </nav>
       <button id="connect" class="button connect" type="button">เชื่อม MetaMask</button>
     </div>
   </header>
 
   <main class="container">
-    <h1>บัญชีธนาคาร Web3 · Lab 7</h1>
-    <p class="identity"><span id="student-name"></span><span id="student-id"></span></p>
+    <div class="page-intro">
+      <div>
+        <p class="lab-label">Lab 7 <span aria-hidden="true">/</span> MetaMask + Infura</p>
+        <h1>บัญชีธนาคาร Web3</h1>
+      </div>
+      <p class="identity"><strong id="student-name"></strong><span id="student-id"></span></p>
+    </div>
 
     <section class="infura-panel" aria-labelledby="infura-title">
       <h2 id="infura-title">เชื่อม Infura</h2>
-      <form id="infura-form">
-        <label for="infura-key">Infura API key หรือ Sepolia HTTPS Endpoint</label>
-        <div class="infura-input">
-          <input id="infura-key" type="password" autocomplete="off" spellcheck="false" required>
-          <button id="infura-connect" class="button secondary" type="submit">เชื่อม Infura</button>
+      <div class="infura-grid">
+        <div class="infura-connect">
+          <form id="infura-form">
+            <label for="infura-key">Infura API key หรือ Sepolia HTTPS Endpoint</label>
+            <div class="infura-input">
+              <input id="infura-key" type="password" autocomplete="off" spellcheck="false" required>
+              <button id="infura-connect" class="button secondary" type="submit">เชื่อม Infura</button>
+            </div>
+          </form>
+          <p id="infura-status" role="status">ยอดเงินในสัญญาจะอ่านผ่าน Infura</p>
         </div>
-      </form>
-      <p id="infura-status" role="status">ยอดเงินในสัญญาจะอ่านผ่าน Infura</p>
-      <form id="lookup-form" class="balance-lookup">
-        <label for="lookup-address">ที่อยู่กระเป๋าที่ต้องการเช็กยอด (อ่านอย่างเดียว)</label>
-        <div class="infura-input">
-          <input id="lookup-address" type="text" autocomplete="off" spellcheck="false" placeholder="0x…" maxlength="42" required>
-          <button id="lookup-submit" class="button secondary" type="submit" disabled>เช็กยอดผ่าน Infura</button>
-        </div>
-        <p id="lookup-result" role="status">เชื่อม Infura แล้วกรอกที่อยู่สาธารณะเพื่อดูยอดในสัญญา Bank ไม่ต้องเชื่อมกระเป๋า</p>
-      </form>
+        <form id="lookup-form" class="balance-lookup">
+          <label for="lookup-address">ที่อยู่กระเป๋าสาธารณะ</label>
+          <div class="infura-input">
+            <input id="lookup-address" type="text" autocomplete="off" spellcheck="false" placeholder="0x…" maxlength="42" required>
+            <button id="lookup-submit" class="button secondary" type="submit" disabled>เช็กยอดผ่าน Infura</button>
+          </div>
+          <p id="lookup-result" role="status">เช็กยอดแบบอ่านอย่างเดียวได้โดยไม่ต้องเชื่อม MetaMask</p>
+        </form>
+      </div>
     </section>
 
     <div class="dashboard">
@@ -45,7 +61,7 @@
           <span id="network" class="network"></span>
         </div>
         <p class="balance"><output id="balance" aria-live="polite">—</output> <span>ETH</span></p>
-        <button id="check" class="button check" type="button" disabled>เช็กยอด</button>
+        <button id="check" class="button check" type="button" disabled><span aria-hidden="true">↻</span> เช็กยอด</button>
 
         <dl class="details">
           <dt>กระเป๋าที่เชื่อมต่อ</dt><dd id="wallet">ยังไม่เชื่อมต่อ</dd>
@@ -65,8 +81,10 @@
           <button id="deposit" class="button primary" type="button" disabled>ฝากเงิน</button>
           <button id="withdraw" class="button secondary" type="button" disabled>ถอนเงิน</button>
         </div>
-        <p id="status" role="status" aria-live="polite"></p>
-        <a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden>ดูธุรกรรมใน Explorer ↗</a>
+        <div class="transaction-feedback">
+          <p id="status" role="status" aria-live="polite"></p>
+          <a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden>ดูธุรกรรมใน Explorer ↗</a>
+        </div>
       </section>
     </div>
   </main>

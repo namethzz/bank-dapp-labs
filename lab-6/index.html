@@ -4,19 +4,31 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bank DApp · Assignment Lab 6</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../bank-ui.css">
 </head>
 <body>
   <header class="topbar">
     <div class="container header-inner">
-      <strong class="brand"><span class="mark" aria-hidden="true">B</span> Bank DApp</strong>
+      <a class="brand" href="../" aria-label="Bank DApp · หน้าหลัก">
+        <span class="mark" aria-hidden="true">B</span>
+        <span>Bank DApp</span>
+      </a>
+      <nav class="lab-nav" aria-label="เลือกงาน">
+        <a href="../lab-6/" aria-current="page">Lab 6</a>
+        <a href="../lab-7/">Lab 7</a>
+      </nav>
       <button id="connect" class="button connect" type="button">เชื่อม MetaMask</button>
     </div>
   </header>
 
   <main class="container">
-    <h1>บัญชีธนาคาร Web3 · Lab 6</h1>
-    <p class="identity"><span id="student-name"></span><span id="student-id"></span></p>
+    <div class="page-intro">
+      <div>
+        <p class="lab-label">Lab 6 <span aria-hidden="true">/</span> MetaMask</p>
+        <h1>บัญชีธนาคาร Web3</h1>
+      </div>
+      <p class="identity"><strong id="student-name"></strong><span id="student-id"></span></p>
+    </div>
 
     <div class="dashboard">
       <section class="balance-panel" aria-labelledby="balance-title">
@@ -25,7 +37,7 @@
           <span id="network" class="network"></span>
         </div>
         <p class="balance"><output id="balance" aria-live="polite">—</output> <span>ETH</span></p>
-        <button id="check" class="button check" type="button" disabled>เช็กยอด</button>
+        <button id="check" class="button check" type="button" disabled><span aria-hidden="true">↻</span> เช็กยอด</button>
 
         <dl class="details">
           <dt>กระเป๋าที่เชื่อมต่อ</dt><dd id="wallet">ยังไม่เชื่อมต่อ</dd>
@@ -44,8 +56,10 @@
           <button id="deposit" class="button primary" type="button" disabled>ฝากเงิน</button>
           <button id="withdraw" class="button secondary" type="button" disabled>ถอนเงิน</button>
         </div>
-        <p id="status" role="status" aria-live="polite"></p>
-        <a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden>ดูธุรกรรมใน Explorer ↗</a>
+        <div class="transaction-feedback">
+          <p id="status" role="status" aria-live="polite"></p>
+          <a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden>ดูธุรกรรมใน Explorer ↗</a>
+        </div>
       </section>
     </div>
   </main>
