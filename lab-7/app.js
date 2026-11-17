@@ -270,6 +270,12 @@ async function run(action) {
     }
 
     const amount = parseAmount();
+    if (action === "deposit") {
+      const result = await infuraRequest(infuraEndpoint, "eth_getBalance", [address, "latest"]);
+      if (amount >= BigInt(result)) {
+        throw new Error("ยอดในกระเป๋าไม่พอ กรุณาลดจำนวนฝากและเหลือ SepoliaETH สำหรับค่า Gas");
+      }
+    }
     if (action === "withdraw" && amount > await balanceOf(address)) {
       throw new Error("ยอดในสัญญาไม่เพียงพอสำหรับถอน");
     }
