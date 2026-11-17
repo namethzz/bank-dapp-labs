@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sepolia Bank Lab · Lab 7</title>
-  <link rel="stylesheet" href="../bank-ui.css">
+  <link rel="stylesheet" href="../bank-ui.css?v=2">
 </head>
 <body>
   <header class="topbar">
@@ -17,7 +17,10 @@
         <a href="../lab-6/">Lab 6</a>
         <a href="../lab-7/" aria-current="page">Lab 7</a>
       </nav>
-      <button id="connect" class="button connect" type="button">เชื่อม MetaMask</button>
+      <div class="wallet-actions">
+        <button id="connect" class="button connect" type="button">เชื่อม MetaMask</button>
+        <button id="disconnect-wallet" class="button secondary" type="button" hidden>ตัดการเชื่อมต่อ</button>
+      </div>
     </div>
   </header>
 
@@ -88,6 +91,6 @@
       </section>
     </div>
   </main>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=2"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 import { student, network, bankAddress } from "./config.js";
 
 const ui = Object.fromEntries(
-  ["connect", "student-name", "student-id", "balance", "network", "check",
+  ["connect", "disconnect-wallet", "student-name", "student-id", "balance", "network", "check",
     "wallet", "contract", "amount", "deposit", "withdraw", "status", "transaction-link",
     "infura-form", "infura-key", "infura-connect", "infura-status",
     "lookup-form", "lookup-address", "lookup-submit", "lookup-result"]
@@ -20,6 +20,14 @@ const selectors = {
   withdraw: "0x2e1a7d4d", // withdraw(uint256)
   balance: "0x2a7cc41f", // checkBlance()
 };
+
+const disconnectedKey = "bank-dapp-labs:wallet-disconnected";
+let walletDisconnected = false;
+try {
+  walletDisconnected = localStorage.getItem(disconnectedKey) === "true";
+} catch {
+  // The current page can still disconnect when browser storage is unavailable.
+}
 
 let account = "";
 let chainId = "";
@@ -104,9 +112,12 @@ function refreshControls() {
   ui["infura-connect"].disabled = connectingInfura || pending || lookingUpBalance;
   ui["lookup-submit"].disabled = !configured || !infuraEndpoint || lookingUpBalance || connectingInfura;
   ui["lookup-address"].disabled = lookingUpBalance;
-  ui.connect.disabled = !wallet || refreshing || pending || connectingInfura || Boolean(account && chainId === network.chainId);
+  ui.connect.hidden = Boolean(account && chainId === network.chainId);
+  ui["disconnect-wallet"].hidden = !account;
+  ui["disconnect-wallet"].disabled = pending;
+  ui.connect.disabled = !wallet || refreshing || pending || connectingInfura;
   ui.connect.textContent = account
-    ? (chainId === network.chainId ? "เชื่อมต่อแล้ว" : "สลับไป " + network.name)
+    ? "สลับไป " + network.name
     : "เชื่อม MetaMask";
   for (const control of [ui.check, ui.amount, ui.deposit, ui.withdraw]) {
     control.disabled = !ready || pending || connectingInfura;
@@ -170,7 +181,48 @@ async function lookupBalance(event) {
   }
 }
 
+function rememberWalletDisconnect(disconnected) {
+  walletDisconnected = disconnected;
+  try {
+    if (disconnected) localStorage.setItem(disconnectedKey, "true");
+    else localStorage.removeItem(disconnectedKey);
+  } catch {
+    // The flag still applies for the lifetime of this page.
+  }
+}
+
+async function disconnectWallet() {
+  if (!account || pending) return;
+  pending = true;
+  rememberWalletDisconnect(true);
+  session += 1;
+  account = "";
+  chainId = "";
+  ready = false;
+  refreshing = false;
+  ui.wallet.textContent = "ยังไม่เชื่อมต่อ";
+  ui.balance.textContent = "—";
+  ui.amount.value = "";
+  ui["transaction-link"].hidden = true;
+  ui["transaction-link"].removeAttribute("href");
+  status("ตัดการเชื่อมต่อกระเป๋าแล้ว");
+  refreshControls();
+
+  try {
+    await rpc("wallet_revokePermissions", [{ eth_accounts: {} }]);
+  } catch {
+    status("ตัดการเชื่อมต่อในเว็บแล้ว คุณสามารถถอนสิทธิ์ของเว็บไซต์ได้ใน MetaMask");
+  } finally {
+    pending = false;
+    refreshControls();
+  }
+}
+
 async function syncWallet() {
+  if (walletDisconnected) {
+    refreshControls();
+    return;
+  }
   const current = ++session;
   refreshing = true;
   ready = false;
@@ -231,7 +283,9 @@ async function connect() {
         }
       }
     } else {
-      await rpc("eth_requestAccounts");
+      const accounts = await rpc("eth_requestAccounts");
+      if (!accounts?.length) return status("กรุณาเลือกบัญชีใน MetaMask");
+      rememberWalletDisconnect(false);
     }
     await syncWallet();
   } catch (error) {
@@ -327,6 +381,7 @@ async function run(action) {
 ui["infura-form"].addEventListener("submit", connectInfura);
 ui["lookup-form"].addEventListener("submit", lookupBalance);
 ui.connect.addEventListener("click", connect);
+ui["disconnect-wallet"].addEventListener("click", disconnectWallet);
 ui.check.addEventListener("click", () => run("check"));
 ui.deposit.addEventListener("click", () => run("deposit"));
 ui.withdraw.addEventListener("click", () => run("withdraw"));
