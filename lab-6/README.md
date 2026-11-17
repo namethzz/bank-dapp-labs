@@ -1,0 +1,28 @@
+# Bank DApp · Assignment Lab 6
+
+**Bank บน Sepolia:** [`0x9985C32b57B0F2B685Ac85b122BBEB65048C4dca`](https://sepolia.etherscan.io/address/0x9985C32b57B0F2B685Ac85b122BBEB65048C4dca) ตั้งค่าใน `config.js` แล้ว ใช้สัญญานี้ได้เลย ขั้นตอน Deploy ด้านล่างใช้เมื่อต้องการสร้างสัญญาใหม่
+
+เว็บ HTML/CSS/JavaScript สำหรับเชื่อม MetaMask แล้วฝาก ถอน และเช็กยอดกับ Bank Smart Contract ตัวอย่างในสไลด์ Blueprint หน้า 3 โดยเรียก `checkBlance()` ตามชื่อฟังก์ชันในสไลด์ เว็บเรียก MetaMask ผ่าน JSON-RPC และใช้ ABI ของฟังก์ชันทั้งสามที่เข้ารหัสไว้ใน `app.js` จึงเปิดใช้งานได้โดยไม่มีขั้นตอน build หรือติดตั้งแพ็กเกจ
+
+## 1. Deploy Smart Contract ใน Remix
+
+1. เปิด [Remix IDE](https://remix.ethereum.org/) แล้วสร้างไฟล์ `Bank.sol` โดยใช้โค้ดจากไฟล์ที่แนบในโปรเจกต์
+2. ไปที่ **Solidity Compiler** เลือก compiler 0.8.x และกด **Compile Bank.sol**
+3. เลือกเครือข่าย **Sepolia** ใน MetaMask และเตรียม Sepolia ETH สำหรับค่าธรรมเนียมและทดสอบ  หากยังไม่เห็นเครือข่ายนี้ ให้เปิด **Show test networks** ใน MetaMask (Chain ID: `11155111`)
+4. ใน **Deploy & Run Transactions** ตั้ง **Environment** เป็น **Browser Extension** แล้วเลือก MetaMask และสัญญา **Bank** กด **Deploy** และยืนยันใน MetaMask
+5. เมื่อสัญญาปรากฏใต้ **Deployed Contracts** ให้คัดลอก Contract Address จากรายการนั้น การ Verify บน Explorer เป็นขั้นเสริมตามโจทย์ที่แนบมา
+
+## 2. ตั้งค่าและทดสอบเว็บ
+
+1. เปิด `config.js` กรอกเลขรหัสนักศึกษาใน `student.id` และตรวจชื่อใน `student.name`
+2. วาง Contract Address ใน `bankAddress` โดยใช้ Address ของ Bank ที่ Deploy บน Sepolia
+3. ใน VS Code เปิดเทอร์มินัลในโฟลเดอร์โปรเจกต์แล้วใช้ `python -m http.server 8000` จากนั้นเปิด [localhost:8000](http://localhost:8000/) ในเบราว์เซอร์ที่ติดตั้ง MetaMask
+4. กด **เชื่อม MetaMask** แล้วทดสอบฝาก 0.001 ETH เช็กยอด ถอน 0.0005 ETH แล้วเช็กยอดอีกครั้ง ยอดสุดท้ายควรเพิ่มขึ้น 0.0005 ETH จากยอดเดิมในสัญญา
+
+## 3. ส่งงานผ่าน GitHub Pages
+
+1. สร้าง Repository สำหรับ Assignment Lab 6 แล้วอัปโหลดไฟล์จากด้านในโฟลเดอร์ให้ `index.html` อยู่ที่ระดับบนสุดของ branch `main`
+2. ใน GitHub ไปที่ **Settings → Pages → Deploy from a branch** เลือก **main** และ **/(root)** แล้วกด **Save**
+3. เปิด URL ที่แสดงใน **Settings → Pages** และทดสอบเชื่อม MetaMask กับสัญญาบน Sepolia อีกครั้ง ก่อนส่ง URL ใน dlearning
+
+[เอกสาร Remix](https://remix-ide.readthedocs.io/en/latest/run.html) · [คู่มือ GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)

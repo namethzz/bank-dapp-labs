@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bank DApp · Assignment Lab 7</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container header-inner">
+      <strong class="brand"><span class="mark" aria-hidden="true">B</span> Bank DApp</strong>
+      <button id="connect" class="button connect" type="button">เชื่อม MetaMask</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>บัญชีธนาคาร Web3 · Lab 7</h1>
+    <p class="identity"><span id="student-name"></span><span id="student-id"></span></p>
+
+    <section class="infura-panel" aria-labelledby="infura-title">
+      <h2 id="infura-title">เชื่อม Infura</h2>
+      <form id="infura-form">
+        <label for="infura-key">Infura API key หรือ Sepolia HTTPS Endpoint</label>
+        <div class="infura-input">
+          <input id="infura-key" type="password" autocomplete="off" spellcheck="false" required>
+          <button id="infura-connect" class="button secondary" type="submit">เชื่อม Infura</button>
+        </div>
+      </form>
+      <p id="infura-status" role="status">ยอดเงินในสัญญาจะอ่านผ่าน Infura</p>
+    </section>
+
+    <div class="dashboard">
+      <section class="balance-panel" aria-labelledby="balance-title">
+        <div class="balance-heading">
+          <h2 id="balance-title">ยอดเงินในสัญญา</h2>
+          <span id="network" class="network"></span>
+        </div>
+        <p class="balance"><output id="balance" aria-live="polite">—</output> <span>ETH</span></p>
+        <button id="check" class="button check" type="button" disabled>เช็กยอด</button>
+
+        <dl class="details">
+          <dt>กระเป๋าที่เชื่อมต่อ</dt><dd id="wallet">ยังไม่เชื่อมต่อ</dd>
+          <dt>Smart Contract</dt><dd id="contract">ยังไม่ได้ตั้งค่า</dd>
+        </dl>
+      </section>
+
+      <section class="transaction-panel" aria-labelledby="transaction-title">
+        <h2 id="transaction-title">ฝากและถอน</h2>
+        <label for="amount">จำนวนเงิน</label>
+        <div class="amount-field">
+          <input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" disabled>
+          <span>ETH</span>
+        </div>
+        <div class="actions">
+          <button id="deposit" class="button primary" type="button" disabled>ฝากเงิน</button>
+          <button id="withdraw" class="button secondary" type="button" disabled>ถอนเงิน</button>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+        <a id="transaction-link" target="_blank" rel="noopener noreferrer" hidden>ดูธุรกรรมใน Explorer ↗</a>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
