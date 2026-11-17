@@ -54,4 +54,7 @@ dd a { color: inherit; }
 .infura-input { display: flex; flex-wrap: wrap; gap: .65rem; }
 .infura-input input { flex: 1 1 14rem; min-width: 0; padding: .65rem .8rem; color: inherit; border: 1px solid #96a9a0; border-radius: .7rem; }
 #infura-status { margin: .65rem 0 0; color: #425c51; }
-#infura-status[data-error="true"] { color: #a52429; }
+#infura-status[data-error="true"], #lookup-result[data-error="true"] { color: #a52429; }
+.balance-lookup { margin-top: 1rem; padding-top: .25rem; border-top: 1px solid #dce6db; }
+#lookup-result, .transaction-note { margin: .65rem 0 0; color: #425c51; }
+#lookup-result { overflow-wrap: anywhere; }

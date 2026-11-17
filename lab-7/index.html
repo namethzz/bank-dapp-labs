@@ -28,6 +28,14 @@
         </div>
       </form>
       <p id="infura-status" role="status">ยอดเงินในสัญญาจะอ่านผ่าน Infura</p>
+      <form id="lookup-form" class="balance-lookup">
+        <label for="lookup-address">ที่อยู่กระเป๋าที่ต้องการเช็กยอด (อ่านอย่างเดียว)</label>
+        <div class="infura-input">
+          <input id="lookup-address" type="text" autocomplete="off" spellcheck="false" placeholder="0x…" maxlength="42" required>
+          <button id="lookup-submit" class="button secondary" type="submit" disabled>เช็กยอดผ่าน Infura</button>
+        </div>
+        <p id="lookup-result" role="status">เชื่อม Infura แล้วกรอกที่อยู่สาธารณะเพื่อดูยอดในสัญญา Bank ไม่ต้องเชื่อมกระเป๋า</p>
+      </form>
     </section>
 
     <div class="dashboard">
@@ -47,6 +55,7 @@
 
       <section class="transaction-panel" aria-labelledby="transaction-title">
         <h2 id="transaction-title">ฝากและถอน</h2>
+        <p class="transaction-note">ใช้ Sepolia Testnet และยืนยันธุรกรรมใน MetaMask</p>
         <label for="amount">จำนวนเงิน</label>
         <div class="amount-field">
           <input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" disabled>

@@ -3,7 +3,8 @@ import { student, network, bankAddress } from "./config.js";
 const ui = Object.fromEntries(
   ["connect", "student-name", "student-id", "balance", "network", "check",
     "wallet", "contract", "amount", "deposit", "withdraw", "status", "transaction-link",
-    "infura-form", "infura-key", "infura-connect", "infura-status"]
+    "infura-form", "infura-key", "infura-connect", "infura-status",
+    "lookup-form", "lookup-address", "lookup-submit", "lookup-result"]
     .map((id) => [id, document.getElementById(id)])
 );
 
@@ -28,6 +29,7 @@ let session = 0;
 let refreshing = false;
 let infuraEndpoint = "";
 let connectingInfura = false;
+let lookingUpBalance = false;
 
 const infuraOrigin = "https://sepolia.infura.io";
 
@@ -51,7 +53,7 @@ async function infuraRequest(endpoint, method, params = []) {
 
 async function connectInfura(event) {
   event.preventDefault();
-  if (connectingInfura || pending) return;
+  if (connectingInfura || pending || lookingUpBalance) return;
 
   const input = ui["infura-key"];
   const feedback = ui["infura-status"];
@@ -98,8 +100,10 @@ function status(message, error = false) {
 }
 
 function refreshControls() {
-  ui["infura-key"].disabled = connectingInfura || pending;
-  ui["infura-connect"].disabled = connectingInfura || pending;
+  ui["infura-key"].disabled = connectingInfura || pending || lookingUpBalance;
+  ui["infura-connect"].disabled = connectingInfura || pending || lookingUpBalance;
+  ui["lookup-submit"].disabled = !configured || !infuraEndpoint || lookingUpBalance || connectingInfura || pending;
+  ui["lookup-address"].disabled = lookingUpBalance;
   ui.connect.disabled = !wallet || refreshing || pending || connectingInfura || Boolean(account && chainId === network.chainId);
   ui.connect.textContent = account
     ? (chainId === network.chainId ? "เชื่อมต่อแล้ว" : "สลับไป " + network.name)
@@ -135,6 +139,35 @@ async function balanceOf(address) {
   const result = await infuraRequest(infuraEndpoint, "eth_call", [{ from: address, to: bankAddress, data: selectors.balance }, "latest"]);
   if (!/^0x[\da-f]{64}$/i.test(result)) throw new Error("สัญญาไม่คืนยอดเงิน กรุณาตรวจสอบ Address ของ Bank");
   return BigInt(result);
+}
+
+async function lookupBalance(event) {
+  event.preventDefault();
+  if (!configured || !infuraEndpoint || lookingUpBalance || connectingInfura || pending) return;
+
+  const address = ui["lookup-address"].value.trim();
+  const feedback = ui["lookup-result"];
+  if (!/^0x[\da-f]{40}$/i.test(address)) {
+    feedback.textContent = "กรอกที่อยู่กระเป๋า Ethereum แบบ 0x และตัวเลขฐานสิบหก 40 ตัว";
+    feedback.dataset.error = "true";
+    return;
+  }
+
+  lookingUpBalance = true;
+  feedback.dataset.error = "false";
+  feedback.textContent = "กำลังอ่านยอดผ่าน Infura…";
+  refreshControls();
+
+  try {
+    const amount = await balanceOf(address);
+    feedback.textContent = `ยอดในสัญญา Bank ของ ${address}: ${formatAmount(amount)} ETH · อ่านผ่าน Infura บน Sepolia`;
+  } catch (error) {
+    feedback.dataset.error = "true";
+    feedback.textContent = errorMessage(error);
+  } finally {
+    lookingUpBalance = false;
+    refreshControls();
+  }
 }
 
 async function syncWallet() {
@@ -286,6 +319,7 @@ async function run(action) {
 }
 
 ui["infura-form"].addEventListener("submit", connectInfura);
+ui["lookup-form"].addEventListener("submit", lookupBalance);
 ui.connect.addEventListener("click", connect);
 ui.check.addEventListener("click", () => run("check"));
 ui.deposit.addEventListener("click", () => run("deposit"));
@@ -297,6 +331,6 @@ if (wallet) {
   wallet.on?.("disconnect", syncWallet);
   syncWallet();
 } else {
-  status("เปิดหน้านี้ในเบราว์เซอร์ที่มีส่วนขยาย MetaMask");
+  status("การฝากและถอนต้องใช้เบราว์เซอร์ที่มี MetaMask");
   refreshControls();
 }
